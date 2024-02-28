@@ -1,0 +1,9 @@
+!*.cs
+/Group12_MobileShop/.vs/Group12_MobileShop/config/applicationhost.config
+/Group12_MobileShop/.vs/Group12_MobileShop/DesignTimeBuild
+/Group12_MobileShop/.vs/Group12_MobileShop/FileContentIndex
+/Group12_MobileShop/.vs/Group12_MobileShop/v17/.suo
+/Group12_MobileShop/Group12_MobileShop/bin/Debug/net6.0
+/Group12_MobileShop/Group12_MobileShop/obj/Debug/net6.0
+/Group12_MobileShop/Group12_MobileShop/obj
+/Group12_MobileShop/Group12_MobileShop/wwwroot
