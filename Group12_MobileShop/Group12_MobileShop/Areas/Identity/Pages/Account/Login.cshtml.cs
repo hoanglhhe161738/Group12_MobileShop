@@ -15,6 +15,9 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
+using System.Text;
+using System.Web;
 
 namespace Group12_MobileShop.Areas.Identity.Pages.Account
 {
@@ -23,10 +26,14 @@ namespace Group12_MobileShop.Areas.Identity.Pages.Account
         private readonly SignInManager<User> _signInManager;
         private readonly ILogger<LoginModel> _logger;
 
+        private readonly HttpClient client = null;
+        private string loginUrl = string.Empty;
         public LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> logger)
         {
             _signInManager = signInManager;
             _logger = logger;
+            client = new HttpClient();
+            loginUrl = "http://localhost:5000/api/Login?Email=";
         }
 
         /// <summary>
@@ -102,9 +109,9 @@ namespace Group12_MobileShop.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync()
         {
-            returnUrl ??= Url.Content("~/");
+            //returnUrl ??= Url.Content("~/");
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
@@ -112,26 +119,43 @@ namespace Group12_MobileShop.Areas.Identity.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
-                if (result.Succeeded)
+                //var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                //if (result.Succeeded)
+                //{
+                //    _logger.LogInformation("User logged in.");
+                //    return LocalRedirect(returnUrl);
+                //}
+                //if (result.RequiresTwoFactor)
+                //{
+                //    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                //}
+                //if (result.IsLockedOut)
+                //{
+                //    _logger.LogWarning("User account locked out.");
+                //    return RedirectToPage("./Lockout");
+                //}
+                //else
+                //{
+                //    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                //    return Page();
+                //}
+                string user_encode = Input.Email;
+                string password_encode = Input.Password;
+                user_encode = HttpUtility.UrlEncode(user_encode);
+                password_encode = HttpUtility.UrlEncode(password_encode);
+
+                loginUrl = loginUrl + user_encode + "&password=" + password_encode;
+                HttpResponseMessage responseMessage = await client.GetAsync(loginUrl);
+
+                string responseBody = await responseMessage.Content.ReadAsStringAsync();
+                var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+                User user = JsonSerializer.Deserialize<User>(responseBody);
+                if (user == null)
                 {
-                    _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
+                    return Content("Sai tai khoan hoac mat khau");
                 }
-                if (result.RequiresTwoFactor)
-                {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
-                }
-                if (result.IsLockedOut)
-                {
-                    _logger.LogWarning("User account locked out.");
-                    return RedirectToPage("./Lockout");
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return Page();
-                }
+                return Redirect("/Product/Index");
             }
 
             // If we got this far, something failed, redisplay form

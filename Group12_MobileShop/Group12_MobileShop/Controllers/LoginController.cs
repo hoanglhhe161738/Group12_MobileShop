@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Group12_MobileShop.Areas.Identity.Data;
+using Group12_MobileShop.Models;
+using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Group12_MobileShop.Controllers
 {
@@ -19,14 +22,22 @@ namespace Group12_MobileShop.Controllers
 
             return View();
         }
-        public Task< ActionResult > Login (string Email, string Password) 
+        public async Task<IActionResult> Login (string Email, string Password) 
         {
             loginUrl = loginUrl+Email+"&"+Password;
             
-            HttpResponseMessage responseMessage = client.GetAsync(loginUrl);
+            HttpResponseMessage responseMessage = await client.GetAsync(loginUrl);
 
-            string responseBody =  responseMessage.Content.ReadAsStringAsync();
+            string responseBody = await responseMessage.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+            User user = JsonSerializer.Deserialize<User>(responseBody);
+            if(user == null)
+            {
+                return Content("Sai tai khoan hoac mat khau");
+            }
+            return View("Product", "Index");
+                
         }
     }
 }
