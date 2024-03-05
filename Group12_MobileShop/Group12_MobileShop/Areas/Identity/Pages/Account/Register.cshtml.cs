@@ -19,6 +19,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
+using System.Net.Http.Headers;
+using System.Net.Http;
 
 namespace Group12_MobileShop.Areas.Identity.Pages.Account
 {
@@ -30,6 +33,8 @@ namespace Group12_MobileShop.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<User> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly HttpClient client = null;
+        private string registerUrl = string.Empty;
 
         public RegisterModel(
             UserManager<User> userManager,
@@ -44,6 +49,8 @@ namespace Group12_MobileShop.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            client = new HttpClient();
+            registerUrl = "http://localhost:5000/api/Register";
         }
 
         /// <summary>
@@ -71,6 +78,10 @@ namespace Group12_MobileShop.Areas.Identity.Pages.Account
         /// </summary>
         public class InputModel
         {
+            [Required]
+            public string Username { get; set; }
+            [Required]
+            public string Fullname { get; set; }
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -85,19 +96,10 @@ namespace Group12_MobileShop.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
-
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-            public string ConfirmPassword { get; set; }
         }
 
 
@@ -113,54 +115,43 @@ namespace Group12_MobileShop.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                // call api
+                var data = new Dictionary<string, string>
+                {
+                    { "username", Input.Username },
+                    { "password", Input.Password },
+                    { "email", Input.Email },
+                    { "full_name", Input.Fullname }
+                };
 
-                // success
+                var responseMessage = await client.PostAsJsonAsync(registerUrl, data);
 
-                Redirect("/Login");
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    // success
+                    //var user = new User
+                    //{
+                    //    UserName = Input.Username,
+                    //    Email = Input.Email,
+                    //    Fullname = Input.Fullname,
+                    //    Password = Input.Password
+                    //};
+                    //var result = await _userManager.CreateAsync(user);
+                    //if (result.Succeeded)
+                    //{
+                        //_logger.LogInformation("User created a new account with password.");
 
-                // faile
-
-                Response.WriteAsync("<script>alert('Hello');</script>");
-
-
-
-                //var user = CreateUser();
-
-                //await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                //await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                //var result = await _userManager.CreateAsync(user, Input.Password);
-
-                //if (result.Succeeded)
-                //{
-                //    _logger.LogInformation("User created a new account with password.");
-
-                //    var userId = await _userManager.GetUserIdAsync(user);
-                //    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                //    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                //    var callbackUrl = Url.Page(
-                //        "/Account/ConfirmEmail",
-                //        pageHandler: null,
-                //        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                //        protocol: Request.Scheme);
-
-                //    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                //        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                //    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                //    {
-                //        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                //    }
-                //    else
-                //    {
-                //        await _signInManager.SignInAsync(user, isPersistent: false);
-                //        return LocalRedirect(returnUrl);
-                //    }
-                //}
-                //foreach (var error in result.Errors)
-                //{
-                //    ModelState.AddModelError(string.Empty, error.Description);
-                //}
+                        //await _signInManager.SignInAsync(user, isPersistent: false);
+                        return Redirect("Login");
+                    //}
+                    //foreach (var error in result.Errors)
+                    //{
+                    //    ModelState.AddModelError(string.Empty, error.Description);
+                    //}
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, $"API call failed with status code {responseMessage.StatusCode}");
+                }
             }
 
             // If we got this far, something failed, redisplay form
