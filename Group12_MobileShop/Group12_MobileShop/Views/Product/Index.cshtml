@@ -16,11 +16,30 @@
         width: 30%;
         margin-bottom:3em;
     }
+    .div-img{
+        width: 80%;
+        height: 50%;
+        margin-bottom: 20px;
+    }
+    .div-content{
+        margin-left:1em;
+    }
+    .col{
+        margin:0 2em 2em 0;
+        height: 20em;width:180px;
+        display:flex;
+        flex-direction:column;
+        box-shadow: 2px 5px;
+        border: 1px solid;
+        border-radius: 5px;
+        padding-top: 10px;
+    }
+    .div-button{
+        margin-left:0.5em;
+    }
 </style>
-@* <div id="productcontainer">
-    @Html.Partial("_PartialView", Model);
-</div> *@
-<div class="container" style="width:100%" id="ProductContainer">
+
+<div class="container" style="width:100%; margin-bottom:10em;">
     <div class="Main-function">
         <div class="item-function">
             <button id="Price-hightolow" onclick="filterPriceHighToLow()">Giá Cao -> Thấp</button>
@@ -36,23 +55,35 @@
             </select>
         </div>
     </div>
-
-    @if(Model != null)
-    {
+    <div >
+        @if(Model != null)
+        {
         var count = 0;
-        <div class="container"  style="height:100%;">
+        <div class="container"  style="height:100%;" id="ProductContainer">
             <div class="row row-cols-md-6">
                 @foreach(var item in Model)
                 {
-                <div class="col" style="height:25em;width:200px; display:flex; flex-direction:column;" >
-                    <div style="width:80%;height:50%">
-                            <img style="height:10em" src="@item.imageUrl" href="Link error" />
-                            @* <img style="height:10em" src="https://photos.google.com/photo/AF1QipNDZ8FAA0CRRlMtXT8Erc3b3_UXoog5Llqc835H" href="Link error" /> *@
+                <div class="col" style="margin:0 2em 2em 0;height: 20em;width:180px;display:flex;flex-direction:column;box-shadow: 2px 5px;border: 1px solid;border-radius: 5px;padding-top: 10px;">
+                    <div class="div-img" style="width:80%;height:50%;">
+                        <img style="height:10em;" src="@item.imageUrl" href="Link error" />
                     </div>
-                    <b>@item.modelName</b>
+                    
+                    <div class="div-content">
+                        <b style="font-size:0.8em;white-space:nowrap; text-overflow:ellipsis;">@item.modelName</b>
+                        <p style="font-size:0.7em">@item.price $</p>
+                        <p style="width:10em; font-size:0.7em; overflow:hidden ;white-space:nowrap; text-overflow:ellipsis;">@item.description</p>
+                    </div>
+                    
 
-                    <p>@item.price $</p>
-                    <p>@item.description</p>
+
+                    <div class="div-button">
+                    <button type="button" style="border-radius:10px; background-color:aqua; border:1px solid; box-shadow:1px 1px; width:4em;"> 
+                        Details
+                    </button>
+                        <button style="border-radius:10px; background-color:red;border:1px solid;box-shadow:1px 1px; width:4em">
+                        Order
+                    </button>
+                    </div>
                 </div>
 
                 }
@@ -61,7 +92,15 @@
 
 
         </div>
-    }
+        }
+
+            
+    </div>
+    <div>
+        @if (ViewBag.TotalCount > ViewBag.CurrentPage * 12)
+            {
+            <a href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })">Next Page</a>
+        }</div>
 </div>
 
 <script type="text/javascript">

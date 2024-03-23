@@ -1,5 +1,6 @@
 ﻿using Group12_MobileShop.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text.Json;
 
 namespace Group12_MobileShop.Controllers
@@ -18,14 +19,21 @@ namespace Group12_MobileShop.Controllers
             productUrl = "http://localhost:5000/api/Product";
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int index = 1)
         {
+
             HttpResponseMessage responseMessage = await client.GetAsync(productUrl);
             
             string responseBody = await responseMessage.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            List<Product> list = JsonSerializer.Deserialize<List<Product>>(responseBody);
-            return View(list);
+            var list = JsonSerializer.Deserialize<List<Product>>(responseBody);
+            int pageSize = 12; // Số mục trên mỗi trang
+
+            var pagedData = list.Skip((index - 1) * pageSize).Take(pageSize);
+
+            ViewBag.TotalCount = list.Count();
+            ViewBag.CurrentPage = index;
+            return View(pagedData);
         }
 
         [HttpGet]
@@ -37,8 +45,7 @@ namespace Group12_MobileShop.Controllers
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             List<Product> list = JsonSerializer.Deserialize<List<Product>>(responseBody);
             List<Product> list2 = list.OrderByDescending(p => p.manufacturer).ToList();
-            
-            return View("Index",list2) ;
+            return View("_ProductList", list2) ;
         }
 
         [HttpGet]      
@@ -49,8 +56,8 @@ namespace Group12_MobileShop.Controllers
             string responseBody = await responseMessage.Content.ReadAsStringAsync();
             var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             List<Product> list = JsonSerializer.Deserialize<List<Product>>(responseBody);
-            List<Product> list2 = list.OrderByDescending(p => p.manufacturer).ToList();
-            return View("Index", list2);
+            List<Product> list2 = list.OrderBy(p => p.manufacturer).ToList();
+            return View("_ProductList", list2);
         }
     }
 }
