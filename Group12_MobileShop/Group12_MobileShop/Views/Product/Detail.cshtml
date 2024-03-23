@@ -1,0 +1,28 @@
+﻿@page
+@model Group12_MobileShop.Views.Product.DetailModel
+@{
+    <h1>Chi tiết sản phẩm</h1>
+
+    <div>
+        <dl>
+            <dt>Tên sản phẩm:</dt>
+            <dd>@Model.ModelName</dd>
+        </dl>
+        <dl>
+            <dt>Nhà sản xuất:</dt>
+            <dd>@Model.Manufacturer</dd>
+        </dl>
+        <dl>
+            <dt>Giá:</dt>
+            <dd>@Model.Price $</dd>
+        </dl>
+        <dl>
+            <dt>Mô tả:</dt>
+            <dd>@Model.Description</dd>
+        </dl>
+        <dl>
+            <dt>Trong kho:</dt>
+            <dd>@(Model.InStock ? "Còn hàng" : "Hết hàng")</dd>
+        </dl>
+    </div>
+}
