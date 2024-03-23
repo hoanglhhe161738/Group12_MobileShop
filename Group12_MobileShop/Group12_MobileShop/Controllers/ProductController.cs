@@ -15,7 +15,7 @@ namespace Group12_MobileShop.Controllers
         public ProductController()
         {
             this.client = new HttpClient();
-            productUrl = "http://localhost:7017/api/Product";
+            productUrl = "http://localhost:5000/api/Product";
         }
 
         public async Task<IActionResult> Index()
