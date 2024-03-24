@@ -5,6 +5,10 @@
 
     <div>
         <dl>
+            <dt>ID sản phẩm:</dt>
+            <dd>@Model.Id</dd>
+        </dl>
+        <dl>
             <dt>Tên sản phẩm:</dt>
             <dd>@Model.ModelName</dd>
         </dl>
@@ -25,4 +29,8 @@
             <dd>@(Model.InStock ? "Còn hàng" : "Hết hàng")</dd>
         </dl>
     </div>
+
+    <form method="post">
+        <button type="submit" class="btn btn-primary">Order</button>
+    </form>
 }

@@ -18,11 +18,10 @@
                     <img style="height:10em" src="@item.imageUrl" href="Link error" />
                 </div>
                 <b>@item.modelName</b>
-
                 <p>@item.price $</p>
                 <p>@item.description</p>
                 <div>
-                    <a asp-page="/Product/Detail" asp-route-modelName="@item.modelName" asp-route-manufacturer="@item.manufacturer" asp-route-price="@item.price" asp-route-description="@item.description" asp-route-inStock="@item.inStock" style="border-radius:2px; background-color:blue; color:white; text-decoration:none;">Details</a>
+                    <a asp-page="/Product/Detail" asp-route-id="@item.phoneId" asp-route-modelName="@item.modelName" asp-route-manufacturer="@item.manufacturer" asp-route-price="@item.price" asp-route-description="@item.description" asp-route-inStock="@item.inStock" style="border-radius:2px; background-color:blue; color:white; text-decoration:none;">Details</a>
                     <button style="border-radius:2px; background-color:red">Order</button>
                 </div>
             </div>
