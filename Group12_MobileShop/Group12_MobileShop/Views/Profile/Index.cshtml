@@ -2,3 +2,22 @@
 @model Group12_MobileShop.Views.Profile.IndexModel
 @{
 }
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center">
+        <h2>Profile</h2>
+    </div>
+    <table class="table table-striped table-hover table-bordered m-2">
+        <thead class="table-dark">
+            <tr>
+                <th>Full Name</th>
+                <th>Username</th>                
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@ViewData["FullName"]</td>
+                <td>@ViewData["UserName"]</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
