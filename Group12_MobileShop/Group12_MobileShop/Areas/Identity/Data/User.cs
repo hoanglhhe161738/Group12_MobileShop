@@ -14,7 +14,5 @@ public class User : IdentityUser
     public string Password { get; set; }
     public string Email { get; set; }
     public string Fullname { get; set; }
-    public virtual ICollection<Order>? Orders { get; set; }
-
 }
 
