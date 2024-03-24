@@ -15,16 +15,53 @@
         {
             <div class="col" style="margin:2em;height: 20em;width:180px;display:flex;flex-direction:column;box-shadow: 2px 5px;border: 1px solid;border-radius: 5px;padding-top: 10px;">
                 <div style="width:80%;height:50%">
-                    <img style="height:10em" src="@item.imageUrl" href="Link error" />
+                    <img style="height:10em" src="@item.imageUrl" />
                 </div>
                 <b>@item.modelName</b>
                 <p>@item.price $</p>
                 <p>@item.description</p>
                 <div>
-                    <a asp-page="/Product/Detail" asp-route-id="@item.phoneId" asp-route-modelName="@item.modelName" asp-route-manufacturer="@item.manufacturer" asp-route-price="@item.price" asp-route-description="@item.description" asp-route-inStock="@item.inStock" style="border-radius:2px; background-color:blue; color:white; text-decoration:none;">Details</a>
+                    <a class="details-btn" data-img="@item.imageUrl" data-model="@item.modelName" data-price="@item.price" data-description="@item.description" style="border-radius:2px; background-color:blue; color:white; text-decoration:none;">Details</a>
                     <button style="border-radius:2px; background-color:red">Order</button>
                 </div>
             </div>
         }
     </div>
 </div>
+
+
+<div id="productModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <img id="modalImg" style="height: 200px; width: auto;" />
+        <div id="modalDetails">
+           
+        </div>
+    </div>
+</div>
+
+<script>
+  
+    $(document).ready(function () {
+       
+        $(".details-btn").on("click", function () {
+          
+            var imageUrl = $(this).data('img');
+            var modelName = $(this).data('model');
+            var price = $(this).data('price');
+            var description = $(this).data('description');
+
+            
+            $('#modalImg').attr('src', imageUrl);
+            $('#modalDetails').html("<b>" + modelName + "</b><p>" + price + "</p><p>" + description + "</p>");
+
+           
+            $('#productModal').css('display', 'block');
+        });
+
+     
+        $(".close, #productModal").on("click", function () {
+            $('#productModal').css('display', 'none');
+        });
+    });
+</script>
