@@ -3,16 +3,21 @@
 *@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-
+@{
+    Layout = null;
+}
+@{
+    var currentPage = Context.Session.GetString("CurrentPage");
+    var TotalCount = Context.Session.GetString("TotalCount");
+}
 @model IEnumerable<Product>
 <style>
     .item-function{
-
+        margin-right:1em;
+        
     }
     .Main-function{
         display: flex;
-        justify-content: space-between;
         width: 30%;
         margin-bottom:3em;
     }
@@ -37,39 +42,101 @@
     .div-button{
         margin-left:0.5em;
     }
+    .nav-bar{
+        width:100%;
+        display:flex;
+        justify-content:space-around;
+        background-color:#d70018;
+        padding:10px 0 10px 0;
+    }
+    .Main-function{
+        margin:10px;
+        flex:2;
+    }
+    .search{
+        margin:10px;
+        flex:1.5;
+    }
+
+    .cart-order{
+        display:flex;
+        flex-direction:row;
+        justify-content:flex-start;
+        flex:1;
+        margin:10px;
+    }
+    .txtSearch{
+        width:80%;
+    }
+    .welcome{
+        width:100%;
+        position:fixed;
+        background-color:white;
+        text-align:center;
+        top:0;
+        
+    }
+    .Main-content{
+        margin-top:10em;
+    }
+    .txtSearch{
+        border-radius:10px;
+        border:1px;
+    }
 </style>
 
-<div class="container" style="width:100%; margin-bottom:10em;">
-    <div class="Main-function">
-        <div class="item-function">
-            <button id="Price-hightolow" onclick="filterPriceHighToLow()">Giá Cao -> Thấp</button>
+<div class="content" style="width:100%; margin-bottom:10em;">
+    <div class="welcome">
+        <div class="welcome-1">
+        <h2>Chào mừng bạn đến với Mobile Shop</h2>
+        <div class="nav-bar">
+       
+        <div class="Main-function">
+            <div class="item-function">
+                <button id="Price-hightolow" style="width: 15em;border-radius:10px;background-color:hsla(0, 0%, 100%, .2); border:1px;color:white;" onclick="filterPriceHighToLow()">Sản phẩm giá cao đến thấp &#x2193</button>
+            </div>
+            <div class="item-function">
+                <button id="Price-hightolow" style="width: 15em;border-radius:10px;background-color:hsla(0, 0%, 100%, .2);border:1px;color:white;" onclick="filterPriceLowToHigh()">Sản phẩm giá thấp đến cao &#x2191</button>
+            </div>
+            <div class="item-function">
+                <select style="border-radius:10px; display:none; background-color:hsla(0, 0%, 100%, .2);border:1px; color:white;">
+                    <option value="1">Điện thoại</option>
+                    <option value="2">Máy tính</option>
+                    <option value="3">Khác</option>
+                </select>
+            </div>
         </div>
-        <div class="item-function">
-            <button id="Price-hightolow" onclick="filterPriceLowToHigh()">Giá Thấp -> Cao</button>
+        <div class="search">
+            <input class="txtSearch" type="text" id="searchProduct" placeholder="Bạn muốn tìm kiếm sản phẩm gì?"/>
+            <button type="button" style="border-radius:10px;border:1px; box-shadow: 1px 2px;">Search</button>
         </div>
-        <div class="item-function">
-            <select>
-                <option value="1">Điện thoại</option>
-                <option value="2">Máy tính</option>
-                <option value="3">Khác</option>
-            </select>
+
+        <div class="cart-order">
+            <img src="~/Giỏ hàng.jpg" style="height: 100%; width:30%;margin-right:-3em"/>
+            <img src="~/lịch sử.png" style="  height:100%;width:30%; "/>
         </div>
     </div>
-    <div >
+        </div>
+    </div>
+    
+    
+    <div class=" container Main-content ">
+        <p style="display:none" id="check"></p>
         @if(Model != null)
         {
         var count = 0;
-        <div class="container"  style="height:100%;" id="ProductContainer">
+        <div class="container"  style="height:auto;" id="ProductContainer">
             <div class="row row-cols-md-6">
                 @foreach(var item in Model)
                 {
                 <div class="col" style="margin:0 2em 2em 0;height: 20em;width:180px;display:flex;flex-direction:column;box-shadow: 2px 5px;border: 1px solid;border-radius: 5px;padding-top: 10px;">
+                    <p id="productid" style="display:none">@item.phoneId</p>
                     <div class="div-img" style="width:80%;height:50%;">
                         <img style="height:10em;" src="@item.imageUrl" href="Link error" />
                     </div>
                     
                     <div class="div-content">
-                        <b style="font-size:0.8em;white-space:nowrap; text-overflow:ellipsis;">@item.modelName</b>
+                        <b style="font-size:0.8em;width:10em; white-space:nowrap;overflow:hidden; text-overflow:ellipsis;">@item.modelName</b>
                         <p style="font-size:0.7em">@item.price $</p>
                         <p style="width:10em; font-size:0.7em; overflow:hidden ;white-space:nowrap; text-overflow:ellipsis;">@item.description</p>
                     </div>
@@ -90,22 +157,57 @@
 
             </div>
 
+            <div style="bottom:auto;display:flex; justify-content:space-around;">
+        
+                @if (int.Parse(TotalCount) < int.Parse(currentPage) * 12)
+                {
+     
+                    <a href="@Url.Action("Index", new { page = int.Parse(currentPage) -1})">&#x2190Previous Page </a>
+                    <p></p>
+                }
+                @if (int.Parse(TotalCount) > int.Parse(currentPage) * 12)
+                {
+                    if(int.Parse(currentPage) != 1)
+                    {
+                        <a href="@Url.Action("Index", new {page = int.Parse(currentPage) -1})">&#x2190 Previous Page </a>
+                    }
+                    <p></p>
+                    <a href="@Url.Action("Index", new {page = int.Parse(currentPage) + 1})">Next Page &#x2192</a>
+                }
 
+            </div>
         </div>
-        }
-
-            
+        }    
+        
+        
     </div>
-    <div>
-        @if (ViewBag.TotalCount > ViewBag.CurrentPage * 12)
-            {
-            <a href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })">Next Page</a>
-        }</div>
+
+
+    
 </div>
 
 <script type="text/javascript">
 
+    var check = 0;
+
+    document.getElementById("searchProduct").onchange = function(){
+        var name = document.getElementById("searchProduct").value;
+        $.ajax({
+             url: '@Url.Action("SearchByname","Product")',
+                type: 'GET',
+                data: {name: name},
+                contentType: 'application/json;charset=utf-8',
+                success: function (response) {
+                    $("#ProductContainer").html(response);
+                    console.log(response);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    alert("Không có sản phẩm tìm kiếm")
+                }   
+        })
+    }
     function filterPriceHighToLow(){
+        document.getElementById("check").innerHTML = 1;
         console.log("PriceHighToLow");
         var filter = new XMLHttpRequest();
         // filter.open("GET,"/ProductController/filterPriceHighToLow/",true);
@@ -114,13 +216,18 @@
             url: '@Url.Action("filterPriceHighToLow","Product")',
             type: 'GET',
             contentType: 'application/json;charset=utf-8',
-            success: function (result) {
-                $("#ProductContainer").html(result);
+            success: function (response) {
+                $("#ProductContainer").html(response);
+                console.log(response);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert("Không có sản phẩm tìm kiếm")
             }
         });
     };
 
     function filterPriceLowToHigh() {
+        document.getElementById("check").innerHTML = 1;
         console.log("PriceLowToHigh");
         var filter = new XMLHttpRequest();
         // filter.open("GET,"/ProductController/filterPriceHighToLow/",true);

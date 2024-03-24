@@ -8,7 +8,7 @@ var connectionString = builder.Configuration.GetConnectionString("Group12_Mobile
 
 builder.Services.AddDbContext<Group12_MobileShopContext>(options =>
     options.UseSqlServer(connectionString));
-
+builder.Services.AddSession();
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<Group12_MobileShopContext>();
 builder.Services.Configure<IdentityOptions>(options =>
@@ -35,7 +35,7 @@ app.UseRouting();
 app.UseAuthentication();;
 
 app.UseAuthorization();
-
+app.UseSession();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

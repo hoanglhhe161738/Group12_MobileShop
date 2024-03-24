@@ -8,35 +8,62 @@
 }
 
 @model IEnumerable<Product>
-
+@{
+    var currentPage = Context.Session.GetString("CurrentPage");
+    var TotalCount = Context.Session.GetString("TotalCount");
+}
 @{
 
-    <div class="container" style="height:100%;" id="ProductContainer">
+    <div class="container" style="height:auto;" id="ProductContainer">
         <div class="row row-cols-md-6">
             @foreach (var item in Model)
             {
-                <div class="col" style="margin:2em;height: 20em;width:180px;display:flex;flex-direction:column;box-shadow: 2px 5px;border: 1px solid;border-radius: 5px;padding-top: 10px;">
-                    <div style="width:80%;height:50%">
-                        <img style="height:10em" src="@item.imageUrl" href="Link error" />
+                <div class="col" style="margin:0 2em 2em 0;height: 20em;width:180px;display:flex;flex-direction:column;box-shadow: 2px 5px;border: 1px solid;border-radius: 5px;padding-top: 10px;">
+                    <div class="div-img" style="width:80%;height:50%;">
+                        <img style="height:10em;" src="@item.imageUrl" href="Link error" />
                     </div>
-                    <b>@item.modelName</b>
 
-                    <p>@item.price $</p>
-                    <p>@item.description</p>
-                    <div>
-                    <button type="button" style="border-radius:2px; background-color:blue"> 
-                        Details
-                    </button>
-                        <button style="border-radius:2px; background-color:red">
-                        Order
-                    </button>
+                    <div class="div-content">
+                        <b style="font-size:0.8em;white-space:nowrap; text-overflow:ellipsis;">@item.modelName</b>
+                        <p style="font-size:0.7em">@item.price $</p>
+                        <p style="width:10em; font-size:0.7em; overflow:hidden ;white-space:nowrap; text-overflow:ellipsis;">@item.description</p>
+                    </div>
+
+
+
+                    <div class="div-button">
+                        <button type="button" style="border-radius:10px; background-color:aqua; border:1px solid; box-shadow:1px 1px; width:4em;">
+                            Details
+                        </button>
+                        <button style="border-radius:10px; background-color:red;border:1px solid;box-shadow:1px 1px; width:4em">
+                            Order
+                        </button>
                     </div>
                 </div>
 
             }
-
+            
         </div>
 
 
+        <div style="bottom:auto;display:flex; justify-content:space-around;">
+
+            @if (int.Parse(TotalCount) < int.Parse(currentPage) * 12)
+            {
+
+                <a href="@Url.Action("Index", new { page = int.Parse(currentPage) -1})">&#x2190Previous Page </a>
+                <p></p>
+            }
+            @if (int.Parse(TotalCount) > int.Parse(currentPage) * 12)
+            {
+                if (int.Parse(currentPage) != 1)
+                {
+                    <a href="@Url.Action("Index", new {page = int.Parse(currentPage) -1})">&#x2190 Previous Page </a>
+                }
+                <p></p>
+                <a href="@Url.Action("Index", new {page = int.Parse(currentPage) + 1})">Next Page &#x2192</a>
+            }
+
+        </div>
     </div>
 }
