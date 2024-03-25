@@ -156,8 +156,8 @@ namespace Group12_MobileShop.Areas.Identity.Pages.Account
                     return Content("Sai tai khoan hoac mat khau");
                 }
                 HttpContext.Session.SetString("UserId", user.Id);
-                HttpContext.Session.SetString("UserName", user.UserName);
-                HttpContext.Session.SetString("Fullname", user.Fullname);
+                HttpContext.Session.SetString("UserName", user.username);
+                HttpContext.Session.SetString("Fullname", user.full_name);
                 return Redirect("/Product/Index");
             }
 

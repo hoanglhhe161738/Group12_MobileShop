@@ -10,9 +10,9 @@ namespace Group12_MobileShop.Areas.Identity.Data;
 // Add profile data for application users by adding properties to the User class
 public class User : IdentityUser
 {
-    public string Username { get; set; }
-    public string Password { get; set; }
-    public string Email { get; set; }
-    public string Fullname { get; set; }
+    public string username { get; set; }
+    public string password { get; set; }
+    public string email { get; set; }
+    public string full_name { get; set; }
 }
 

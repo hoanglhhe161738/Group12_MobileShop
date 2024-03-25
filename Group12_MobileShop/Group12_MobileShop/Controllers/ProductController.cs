@@ -60,7 +60,7 @@ namespace Group12_MobileShop.Controllers
             List<Product> list2 = new List<Product>();
             if (models.Count > 0)
             {
-                list2 = models.OrderByDescending(p => p.manufacturer).ToList();
+                list2 = models.OrderByDescending(p => p.price).ToList();
                 
             }
             else
@@ -92,7 +92,7 @@ namespace Group12_MobileShop.Controllers
 
             if(models.Count > 0)
             {
-                list2 = models.OrderBy(p => p.manufacturer).ToList();
+                list2 = models.OrderBy(p => p.price).ToList();
                 models = list2;
             }
             else
