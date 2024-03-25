@@ -1,0 +1,67 @@
+﻿@page
+@model Group12_MobileShop.Views.Phone.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/_ViewImports.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone[0].ModelName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone[0].Manufacturer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone[0].Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone[0].Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone[0].InStock)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Phone[0].ImageUrl)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Phone) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ModelName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Manufacturer)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.InStock)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ImageUrl)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.PhoneId">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.PhoneId">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.PhoneId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
