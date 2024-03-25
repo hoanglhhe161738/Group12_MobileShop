@@ -6,7 +6,7 @@ namespace Group12_MobileShop.Views.Profile
 {
     public class IndexModel : PageModel
     {
-        public void OnGet()
+        public IActionResult OnGet()
         {
             var userId = HttpContext.Session.GetString("UserId");
             var userName = HttpContext.Session.GetString("UserName");
@@ -15,6 +15,7 @@ namespace Group12_MobileShop.Views.Profile
             ViewData["UserId"] = userId;
             ViewData["UserName"] = userName;
             ViewData["Fullname"] = userFullName;
+            return Page();
         }
     }
 }
